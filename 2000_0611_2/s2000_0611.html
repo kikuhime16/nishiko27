@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2000年　同期会その2</title>
+    <style>
+        /* 全体のリセットと中央寄せ */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+            font-family: sans-serif;
+        }
+
+        /* カルーセルと戻るボタンを縦に並べるためのコンテナ */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            width: 100%;
+            max-width: 600px;
+            padding: 15px; /* スマホ用に余白を少し調整 */
+            box-sizing: border-box;
+        }
+
+        /* カルーセルの外枠 */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            /* 【スマホ最適化】横スワイプ時のブラウザ誤作動（ページ戻り等）を防ぐ */
+            touch-action: pan-y;
+        }
+
+        /* スライド全体のラッパー */
+        .carousel-slides {
+            display: flex;
+            width: 2000%;
+            height: 100%;
+            transition: transform 0.4s ease-out; /* スマホでサクサク動くよう少し速めに */
+        }
+
+        /* 各スライド（画像） */
+        .slide {
+            width: 5%;
+            height: 100%;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent; /* タップ時の青い影を消す */
+        }
+
+        /* 矢印ボタン共通 */
+        .prev-btn, .next-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 14px 18px; /* タップしやすいように少し拡大 */
+            cursor: pointer;
+            font-size: 20px;
+            border-radius: 50%;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            z-index: 10;
+        }
+
+        .prev-btn { left: 15px; }
+        .next-btn { right: 15px; }
+
+        /* 【スマホ最適化】画面幅500px以下の時は矢印を隠し、スワイプ操作をメインにする */
+        @media (max-width: 500px) {
+            .prev-btn, .next-btn {
+                display: none;
+            }
+        }
+
+        /* ページネーション（ドット） */
+        .dots-container {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px; /* 指で押しやすいように間隔を広げる */
+        }
+
+        .dot {
+            width: 12px; /* スマホ用に少し大きく */
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .dot.active {
+            background-color: white;
+            transform: scale(1.1);
+        }
+
+        /* 「戻る」ボタン */
+        .back-btn {
+            display: inline-block;
+            width: 80%; /* スマホで押しやすいように横幅を広げる */
+            max-width: 200px;
+            text-align: center;
+            padding: 14px 0; /* 押しやすい厚みに変更 */
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #6c757d;
+            text-decoration: none;
+            border-radius: 40px; /* スマホアプリ風の丸いボタンに変更 */
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.2s;
+        }
+
+        /* モーダル（拡大画面） */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); /* 没入感を出すため少し暗めに */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            max-width: 95%; /* スマホの画面いっぱいに広げる */
+            max-height: 85%;
+            object-fit: contain;
+            animation: zoomIn 0.25s ease-out;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* 閉じるボタン（右上） */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #fff;
+            font-size: 38px;
+            width: 44px;  /* スマホの押しやすいタップ領域（44px）を確保 */
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+
+        <div class="carousel-container" id="carouselContainer">
+            <div class="carousel-slides" id="slides">
+              <div class="slide"><img src="image01.jpg" alt="画像1"></div>
+              <div class="slide"><img src="image02.jpg" alt="画像2"></div>
+              <div class="slide"><img src="image03.jpg" alt="画像3"></div>
+              <div class="slide"><img src="image04.jpg" alt="画像4"></div>
+              <div class="slide"><img src="image05.jpg" alt="画像5"></div>
+              <div class="slide"><img src="image06.jpg" alt="画像1"></div>
+              <div class="slide"><img src="image07.jpg" alt="画像2"></div>
+              <div class="slide"><img src="image08.jpg" alt="画像3"></div>
+              <div class="slide"><img src="image09.jpg" alt="画像4"></div>
+              <div class="slide"><img src="image10.jpg" alt="画像5"></div>
+              <div class="slide"><img src="image11.jpg" alt="画像5"></div>
+              <div class="slide"><img src="image12.jpg" alt="画像3"></div>
+              <div class="slide"><img src="image13.jpg" alt="画像4"></div>
+              <div class="slide"><img src="image14.jpg" alt="画像5"></div>
+              <div class="slide"><img src="image15.jpg" alt="画像5"></div>
+              <div class="slide"><img src="image16.jpg" alt="画像3"></div>
+              <div class="slide"><img src="image17.jpg" alt="画像4"></div>
+              <div class="slide"><img src="image18.jpg" alt="画像5"></div>
+              <div class="slide"><img src="image19.jpg" alt="画像5"></div>
+              <div class="slide"><img src="image20.jpg" alt="画像5"></div>
+            </div>
+
+            <button class="prev-btn" id="prevBtn">&#10094;</button>
+            <button class="next-btn" id="nextBtn">&#10095;</button>
+
+            <div class="dots-container">
+                <span class="dot active" onclick="currentSlide(0)"></span>
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+                <span class="dot" onclick="currentSlide(4)"></span>
+                <span class="dot" onclick="currentSlide(5)"></span>
+                <span class="dot" onclick="currentSlide(6)"></span>
+                <span class="dot" onclick="currentSlide(7)"></span>
+                <span class="dot" onclick="currentSlide(8)"></span>
+                <span class="dot" onclick="currentSlide(9)"></span>
+                <span class="dot" onclick="currentSlide(10)"></span>
+                <span class="dot" onclick="currentSlide(11)"></span>
+                <span class="dot" onclick="currentSlide(12)"></span>
+                <span class="dot" onclick="currentSlide(13)"></span>
+                <span class="dot" onclick="currentSlide(14)"></span>
+                <span class="dot" onclick="currentSlide(15)"></span>
+                <span class="dot" onclick="currentSlide(16)"></span>
+                <span class="dot" onclick="currentSlide(17)"></span>
+                <span class="dot" onclick="currentSlide(18)"></span>
+                <span class="dot" onclick="currentSlide(19)"></span>
+            </div>
+        </div>
+
+        <a href="../index.html" class="back-btn">戻る</a>
+
+    </div>
+
+    <div class="modal" id="imageModal">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <img class="modal-content" id="modalImg" alt="拡大画像">
+    </div>
+
+    <script>
+        const slides = document.getElementById('slides');
+        const dots = document.querySelectorAll('.dot');
+        const totalSlides = 20;
+        let currentIndex = 0;
+        let timer;
+
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImg');
+        const closeModal = document.getElementById('closeModal');
+        const carouselImages = document.querySelectorAll('.slide img');
+        const container = document.getElementById('carouselContainer');
+
+        function updateCarousel() {
+            slides.style.transform = `translateX(-${currentIndex * 5}%)`;
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % totalSlides;
+            updateCarousel();
+            resetTimer();
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+            resetTimer();
+        }
+
+        function currentSlide(index) {
+            currentIndex = index;
+            updateCarousel();
+            resetTimer();
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timer = setInterval(nextSlide, 4000);
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', nextSlide);
+        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+        /* ==========================================
+           スマホ用：スワイプ（フリック）操作の実装
+        ========================================== */
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let isSwiping = false; // スワイプ中かどうかの判定フラグ
+
+        container.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchEndX = touchStartX;
+            isSwiping = false;
+        }, { passive: true });
+
+        container.addEventListener('touchmove', (e) => {
+            touchEndX = e.touches[0].clientX;
+            // 10px以上動いたら「スワイプしている」とみなす
+            if (Math.abs(touchStartX - touchEndX) > 10) {
+                isSwiping = true;
+            }
+        }, { passive: true });
+
+        container.addEventListener('touchend', () => {
+            const swipeDistance = touchStartX - touchEndX;
+            const threshold = 40; // 40px以上指を動かしたらスライドを切り替える
+
+            if (Math.abs(swipeDistance) > threshold) {
+                if (swipeDistance > 0) {
+                    nextSlide(); // 左スワイプで次の画像
+                } else {
+                    prevSlide(); // 右スワイプで前の画像
+                }
+            }
+        });
+
+        /* ==========================================
+           拡大モーダルの制御（誤作動防止付き）
+        ========================================== */
+        carouselImages.forEach(img => {
+            img.addEventListener('click', function() {
+                // 【超重要】指をスワイプしただけなのに、離した瞬間に拡大が開いてしまうのを防ぐ
+                if (isSwiping) return;
+
+                modal.style.display = 'flex';
+                modalImg.src = this.src;
+                clearInterval(timer);
+            });
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+            resetTimer();
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                resetTimer();
+            }
+        });
+
+        resetTimer();
+    </script>
+
+</body>
+</html>
