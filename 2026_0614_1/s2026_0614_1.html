@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026年　同窓会総会</title>
+    <title>2026年 同窓会総会</title>
     <style>
         /* 全体のリセットと中央寄せ */
         body {
@@ -24,7 +24,7 @@
             gap: 25px;
             width: 100%;
             max-width: 600px;
-            padding: 15px; /* スマホ用に余白を少し調整 */
+            padding: 15px;
             box-sizing: border-box;
         }
 
@@ -36,30 +36,30 @@
             overflow: hidden;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            /* 【スマホ最適化】横スワイプ時のブラウザ誤作動（ページ戻り等）を防ぐ */
             touch-action: pan-y;
         }
 
         /* スライド全体のラッパー */
         .carousel-slides {
             display: flex;
-            width: 600%;
+            width: 800%;
             height: 100%;
-            transition: transform 0.4s ease-out; /* スマホでサクサク動くよう少し速めに */
+            transition: transform 0.4s ease-out;
         }
 
-        /* 各スライド（画像） */
+        /* 各スライド（画像・動画） */
         .slide {
-            width: 16.667%;
+            width: 12.5%;
             height: 100%;
         }
 
-        .slide img {
+        /* ③ 動画（video）にも同じスタイルを適用 */
+        .slide img, .slide video {
             width: 100%;
             height: 100%;
             object-fit: cover;
             cursor: pointer;
-            -webkit-tap-highlight-color: transparent; /* タップ時の青い影を消す */
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* 矢印ボタン共通 */
@@ -70,7 +70,7 @@
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
-            padding: 14px 18px; /* タップしやすいように少し拡大 */
+            padding: 14px 18px;
             cursor: pointer;
             font-size: 20px;
             border-radius: 50%;
@@ -82,7 +82,6 @@
         .prev-btn { left: 15px; }
         .next-btn { right: 15px; }
 
-        /* 【スマホ最適化】画面幅500px以下の時は矢印を隠し、スワイプ操作をメインにする */
         @media (max-width: 500px) {
             .prev-btn, .next-btn {
                 display: none;
@@ -96,11 +95,11 @@
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 10px; /* 指で押しやすいように間隔を広げる */
+            gap: 10px;
         }
 
         .dot {
-            width: 12px; /* スマホ用に少し大きく */
+            width: 12px;
             height: 12px;
             background-color: rgba(255, 255, 255, 0.5);
             border-radius: 50%;
@@ -117,16 +116,16 @@
         /* 「戻る」ボタン */
         .back-btn {
             display: inline-block;
-            width: 80%; /* スマホで押しやすいように横幅を広げる */
+            width: 80%;
             max-width: 200px;
             text-align: center;
-            padding: 14px 0; /* 押しやすい厚みに変更 */
+            padding: 14px 0;
             font-size: 16px;
             font-weight: bold;
             color: #ffffff;
             background-color: #6c757d;
             text-decoration: none;
-            border-radius: 40px; /* スマホアプリ風の丸いボタンに変更 */
+            border-radius: 40px;
             box-shadow: 0 3px 6px rgba(0,0,0,0.15);
             -webkit-tap-highlight-color: transparent;
             transition: background-color 0.2s;
@@ -141,13 +140,13 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9); /* 没入感を出すため少し暗めに */
+            background-color: rgba(0, 0, 0, 0.9);
             justify-content: center;
             align-items: center;
         }
 
         .modal-content {
-            max-width: 95%; /* スマホの画面いっぱいに広げる */
+            max-width: 95%;
             max-height: 85%;
             object-fit: contain;
             animation: zoomIn 0.25s ease-out;
@@ -158,14 +157,14 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        /* 閉じるボタン（右上） */
+        /* 閉じるボタン */
         .close-btn {
             position: absolute;
             top: 15px;
             right: 20px;
             color: #fff;
             font-size: 38px;
-            width: 44px;  /* スマホの押しやすいタップ領域（44px）を確保 */
+            width: 44px;
             height: 44px;
             display: flex;
             justify-content: center;
@@ -173,6 +172,7 @@
             cursor: pointer;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            z-index: 1010;
         }
     </style>
 </head>
@@ -182,12 +182,14 @@
 
         <div class="carousel-container" id="carouselContainer">
             <div class="carousel-slides" id="slides">
+              <div class="slide"><video src="movie01.mp4" loop muted autoplay playsinline></video></div>
               <div class="slide"><img src="image01.jpg" alt="画像1"></div>
               <div class="slide"><img src="image02.jpg" alt="画像2"></div>
               <div class="slide"><img src="image03.jpg" alt="画像3"></div>
               <div class="slide"><img src="image04.jpg" alt="画像4"></div>
               <div class="slide"><img src="image05.jpg" alt="画像5"></div>
               <div class="slide"><img src="image06.jpg" alt="画像6"></div>
+              <div class="slide"><video src="movie02.mp4" loop muted autoplay playsinline></video></div>
             </div>
 
             <button class="prev-btn" id="prevBtn">&#10094;</button>
@@ -200,6 +202,8 @@
                 <span class="dot" onclick="currentSlide(3)"></span>
                 <span class="dot" onclick="currentSlide(4)"></span>
                 <span class="dot" onclick="currentSlide(5)"></span>
+                <span class="dot" onclick="currentSlide(6)"></span>
+                <span class="dot" onclick="currentSlide(7)"></span>
             </div>
         </div>
 
@@ -207,26 +211,28 @@
 
     </div>
 
+    <!-- ② モーダル内に動画用タグを追加（controlsで再生バーを表示） -->
     <div class="modal" id="imageModal">
         <span class="close-btn" id="closeModal">&times;</span>
-        <img class="modal-content" id="modalImg" alt="拡大画像">
+        <img class="modal-content" id="modalImg" alt="拡大画像" style="display: none;">
+        <video class="modal-content" id="modalVideo" controls style="display: none;"></video>
     </div>
 
     <script>
         const slides = document.getElementById('slides');
         const dots = document.querySelectorAll('.dot');
-        const totalSlides = 6;
+        const totalSlides = 8;
         let currentIndex = 0;
         let timer;
 
         const modal = document.getElementById('imageModal');
         const modalImg = document.getElementById('modalImg');
-        const closeModal = document.getElementById('closeModal');
-        const carouselImages = document.querySelectorAll('.slide img');
+        const modalVideo = document.getElementById('modalVideo'); // ④動画要素を取得
+        const carouselItems = document.querySelectorAll('.slide img, .slide video'); // ④動画も対象に含める
         const container = document.getElementById('carouselContainer');
 
         function updateCarousel() {
-            slides.style.transform = `translateX(-${currentIndex * 16.667}%)`;
+            slides.style.transform = `translateX(-${currentIndex * 12.5}%)`;
             dots.forEach((dot, index) => {
                 dot.classList.toggle('active', index === currentIndex);
             });
@@ -263,7 +269,7 @@
         ========================================== */
         let touchStartX = 0;
         let touchEndX = 0;
-        let isSwiping = false; // スワイプ中かどうかの判定フラグ
+        let isSwiping = false;
 
         container.addEventListener('touchstart', (e) => {
             touchStartX = e.touches[0].clientX;
@@ -273,7 +279,6 @@
 
         container.addEventListener('touchmove', (e) => {
             touchEndX = e.touches[0].clientX;
-            // 10px以上動いたら「スワイプしている」とみなす
             if (Math.abs(touchStartX - touchEndX) > 10) {
                 isSwiping = true;
             }
@@ -281,40 +286,56 @@
 
         container.addEventListener('touchend', () => {
             const swipeDistance = touchStartX - touchEndX;
-            const threshold = 40; // 40px以上指を動かしたらスライドを切り替える
+            const threshold = 40;
 
             if (Math.abs(swipeDistance) > threshold) {
                 if (swipeDistance > 0) {
-                    nextSlide(); // 左スワイプで次の画像
+                    nextSlide();
                 } else {
-                    prevSlide(); // 右スワイプで前の画像
+                    prevSlide();
                 }
             }
         });
 
         /* ==========================================
-           拡大モーダルの制御（誤作動防止付き）
+           ④ 拡大モーダルの制御（画像・動画の判定付き）
         ========================================== */
-        carouselImages.forEach(img => {
-            img.addEventListener('click', function() {
-                // 【超重要】指をスワイプしただけなのに、離した瞬間に拡大が開いてしまうのを防ぐ
+        carouselItems.forEach(item => {
+            item.addEventListener('click', function() {
                 if (isSwiping) return;
 
                 modal.style.display = 'flex';
-                modalImg.src = this.src;
-                clearInterval(timer);
+                clearInterval(timer); // カルーセルの自動再生をストップ
+
+                if (this.tagName === 'VIDEO') {
+                    // クリックされたのが動画だった場合
+                    modalImg.style.display = 'none';
+                    modalVideo.style.display = 'block';
+                    modalVideo.src = this.src;
+                    modalVideo.play(); // 音付きで自動再生開始
+                } else {
+                    // クリックされたのが画像だった場合
+                    modalVideo.style.display = 'none';
+                    modalImg.style.display = 'block';
+                    modalImg.src = this.src;
+                }
             });
         });
 
-        closeModal.addEventListener('click', () => {
+        // ④ モーダルを閉じる処理（動画停止処理を含む）
+        function closeModalWindow() {
             modal.style.display = 'none';
-            resetTimer();
-        });
+            modalVideo.pause();  // 動画を一時停止
+            modalVideo.src = ""; // ソースを空にして完全に再生を止める（音残り防止）
+            resetTimer();        // カルーセルの自動再生を再開
+        }
+
+        closeModal.addEventListener('click', closeModalWindow);
 
         modal.addEventListener('click', (e) => {
+            // 背景の黒い部分、または動画プレイヤー自体ではなくモーダル外枠がクリックされたら閉じる
             if (e.target === modal) {
-                modal.style.display = 'none';
-                resetTimer();
+                closeModalWindow();
             }
         });
 
